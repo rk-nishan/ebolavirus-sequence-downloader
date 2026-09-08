@@ -1,13 +1,22 @@
 # Orthoebolavirus NCBI Sequence Downloader
 
+[![DOI](https://img.shields.io/badge/DOI-10.6084%2Fm9.figshare.33471685-blue.svg)](https://doi.org/10.6084/m9.figshare.33471685)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python: 3.8+](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/)
+
 Automated Python pipeline for batch retrieval of full-length structural and non-structural protein sequences from the NCBI Entrez Protein database across human-pathogenic *Orthoebolavirus* species.
+
+## Permanent Archive & Citation
+This pipeline is permanently archived on Figshare:
+- **DOI:** [10.6084/m9.figshare.33471685](https://doi.org/10.6084/m9.figshare.33471685)
+- **Direct Figshare Record:** https://figshare.com/articles/software/Automated_NCBI_Sequence_Retrieval_Pipeline_for_Orthoebolavirus_Proteomes/33471685
 
 ## Included Scripts
 
-- `Bundibugyo_sequence_downloader.py`: Retrieval pipeline for *Bundibugyo ebolavirus* (Taxonomy ID: 565995).
-- `Sudan_sequence_downloader.py`: Retrieval pipeline for *Sudan ebolavirus* (Taxonomy ID: 186540).
-- `Tai_forest_sequence_downloader.py`: Retrieval pipeline for *Taï Forest ebolavirus* (Taxonomy ID: 186541).
-- `Zaire_sequence_downloader.py`: Retrieval pipeline for *Zaire ebolavirus* (Taxonomy ID: 186538).
+- `Bundibugyo_sequence_downloader.py`: Retrieval pipeline for *Bundibugyo ebolavirus* (NCBI Taxonomy ID: 565995).
+- `Sudan_sequence_downloader.py`: Retrieval pipeline for *Sudan ebolavirus* (NCBI Taxonomy ID: 186540).
+- `Tai_forest_sequence_downloader.py`: Retrieval pipeline for *Taï Forest ebolavirus* (NCBI Taxonomy ID: 186541).
+- `Zaire_sequence_downloader.py`: Retrieval pipeline for *Zaire ebolavirus* (NCBI Taxonomy ID: 186538).
 
 ## Target Proteins & Curation
 For each species, the pipeline systematically retrieves seven viral targets with predefined sequence length boundaries:
@@ -53,4 +62,4 @@ pip install -r requirements.txt
    - `download_report.txt`: Summary of records retrieved and written.
 
 ## License
-MIT License. Open-source software.
+Distributed under the MIT License.
