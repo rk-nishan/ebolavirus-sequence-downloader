@@ -1,1 +1,2 @@
 biopython>=1.80
+Pillow>=9.0.0

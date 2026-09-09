@@ -1,11 +1,11 @@
-# Orthoebolavirus Proteome Curation & Redundancy Reduction Pipeline
+# Orthoebolavirus Proteome Curation & Multi-Epitope Vaccine Engineering Pipeline
 
 [![DOI](https://img.shields.io/badge/DOI-10.6084%2Fm9.figshare.33471685-blue.svg)](https://doi.org/10.6084/m9.figshare.33471685)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.8+](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/)
 [![R: 4.0+](https://img.shields.io/badge/R-4.0%2B-blue.svg)](https://www.r-project.org/)
 
-An automated computational pipeline for batch sequence retrieval, canonical amino acid quality filtering, and high-stringency redundancy reduction of viral proteomes across four human-pathogenic *Orthoebolavirus* species:
+An automated computational pipeline for batch sequence retrieval, quality cleaning, redundancy reduction, immunological filtering, and multi-epitope construct engineering across four human-pathogenic *Orthoebolavirus* species:
 - **Bundibugyo ebolavirus (BDBV)** (NCBI Taxonomy ID: 565995)
 - **Sudan ebolavirus (SUDV)** (NCBI Taxonomy ID: 186540)
 - **Taï Forest ebolavirus (TAFV)** (NCBI Taxonomy ID: 186541)
@@ -16,104 +16,113 @@ An automated computational pipeline for batch sequence retrieval, canonical amin
 ## Permanent Archive & Citation
 This pipeline is permanently archived on Figshare:
 - **DOI:** [10.6084/m9.figshare.33471685](https://doi.org/10.6084/m9.figshare.33471685)
-- **Direct Record:** [https://figshare.com/articles/software/Automated_NCBI_Sequence_Retrieval_Pipeline_for_Orthoebolavirus_Proteomes/33471685](https://figshare.com/articles/software/Automated_NCBI_Sequence_Retrieval_Pipeline_for_Orthoebolavirus_Proteomes/33471685)
+- **Public Record:** [https://figshare.com/articles/software/Automated_NCBI_Sequence_Retrieval_Pipeline_for_Orthoebolavirus_Proteomes/33471685](https://figshare.com/articles/software/Automated_NCBI_Sequence_Retrieval_Pipeline_for_Orthoebolavirus_Proteomes/33471685)
 
 ---
 
-## Pipeline Architecture & Workflow
+## Pipeline Architecture & Included Scripts
 
 ```
 [NCBI Entrez Database]
          │
          ▼ (Stage 1: Automated Retrieval via Python)
-Raw FASTA Files (7 Proteins × 4 Species)
+Raw FASTA Sequences (7 Viral Proteins × 4 Species)
          │
          ▼ (Stage 2: Canonical Filtering via R)
-Cleaned FASTA Files (Standard 20 Amino Acids Only, ACDEFGHIKLMNPQRSTVWY)
+Cleaned FASTA Files (Standard 20 Amino Acids Only)
          │
          ▼ (Stage 3: Redundancy Reduction via CD-HIT & Python)
-Representative Non-Redundant Clusters (99% Identity & 99% Coverage)
+Non-Redundant Clusters (99% Identity & Coverage)
+         │
+         ▼ (Stage 4 & 5: Epitope Filtering & Selection via Python)
+High-Affinity, Non-Allergenic, Non-Toxic CTL/HTL/LBL Epitopes
+         │
+         ▼ (Stage 6 & 7: Combinatorial Construct Assembly via Python)
+Multi-Epitope Construct Sequences & Architecture Maps
+         │
+         ▼ (Stage 8: Physicochemical & Immunological Ranking via Python)
+Prioritized Vaccine Constructs
 ```
 
-### Stage 1: Automated NCBI Entrez Sequence Retrieval
-Dedicated Python scripts query the NCBI Entrez Protein database using Biopython E-utilities:
+### 1. Sequence Retrieval Downloaders (`*_sequence_downloader.py`)
 - `Bundibugyo_sequence_downloader.py`
 - `Sudan_sequence_downloader.py`
 - `Tai_forest_sequence_downloader.py`
 - `Zaire_sequence_downloader.py`
+*Features:* Automated batch querying of the NCBI Entrez Protein database using Biopython E-utilities for seven target proteins (NP, VP35, VP40, GP, VP30, VP24, L) with negative selection filters and strict length constraints.
 
-**Target Proteins:**
-1. Nucleoprotein (NP)
-2. Polymerase cofactor (VP35)
-3. Matrix protein (VP40)
-4. Surface glycoprotein (GP)
-5. Minor nucleoprotein (VP30)
-6. Membrane-associated protein (VP24)
-7. RNA-dependent RNA polymerase (L)
+### 2. Canonical Amino Acid Quality Cleaning (`clean_standard_amino_acids.R`)
+*Features:* Validates each sequence strictly against the 20 standard canonical amino acids (`ACDEFGHIKLMNPQRSTVWY`), filtering out non-standard or ambiguous residues (`X`, `B`, `Z`, `J`) with automated CSV audit trails.
 
-Each query enforces strict negative-selection exclusion filters (`NOT (partial OR fragment OR chain OR mutant OR synthetic OR construct)`) and species-specific coding length constraints (`[SLEN]`).
+### 3. High-Stringency Redundancy Reduction (`run_cdhit_representatives.py`)
+*Features:* Automates CD-HIT representative clustering at `-c 0.99 -aS 0.99 -aL 0.99 -G 1 -g 1 -n 5` across all cleaned datasets.
 
-### Stage 2: Canonical Amino Acid Quality Filtering
-Implemented in `clean_standard_amino_acids.R`:
-- Validates each retrieved sequence against the 20 standard canonical amino acids (`ACDEFGHIKLMNPQRSTVWY`).
-- Excludes records containing non-standard, ambiguous, or undetermined characters (e.g., `X`, `B`, `Z`, `J`).
-- Generates structured CSV audit trails:
-  - `fasta_cleaning_summary.csv`: Per-protein counts of input, retained, and removed records.
-  - `fasta_cleaning_record_log.csv`: Full accession-level audit log.
-  - `fasta_cleaning_removed_sequences.csv`: List of excluded accessions with detected invalid characters.
+### 4. Multi-Criteria Epitope Filtering (`filter_epitopes_for_downstream.py`)
+*Features:* Filters CTL (percentile rank $\le 1.0$), HTL (percentile rank $\le 10.0$), and linear B-cell epitopes ($\ge 6$ aa) across prediction tools.
 
-### Stage 3: High-Stringency Redundancy Reduction (CD-HIT)
-Implemented in `run_cdhit_representatives.py`:
-- Coordinates CD-HIT execution across all cleaned protein datasets.
-- Parameters enforced:
-  - Sequence identity: `-c 0.99` (99% identity)
-  - Short-sequence coverage: `-aS 0.99` (99% alignment coverage)
-  - Long-sequence coverage: `-aL 0.99` (99% alignment coverage)
-  - Global sequence identity: `-G 1`
-  - Accurate clustering mode: `-g 1`
-  - Word length: `-n 5`
-- Preserves natural strain diversity while removing duplicate isolates.
-- Generates representative FASTA files (`*_cdhit099.fasta`), cluster files (`.clstr`), and an execution summary report (`cdhit099_summary.csv`).
+### 5. Final Candidate Epitope Selection (`final_epitope_candidates.py`)
+*Features:* Cross-evaluates predicted epitopes against allergenicity (AllerTOP), toxicity (ToxinPred2), antigenicity (VaxiJen), cytokine-inducing capacity (IFN-γ, IL-4, IL-10), and proteomic conservancy ($\ge 95\%$).
+
+### 6. Strain-Aware Vaccine Construct Selector (`strain_aware_vaccine_construct_selector.py`)
+*Features:* Combinatorially optimizes epitope composition to maximize balanced cross-strain coverage across BDBV, SUDV, TAFV, and EBOV.
+
+### 7. Construct Sequence & Architecture Generator (`build_vaccine_construct_sequences_and_maps.py`)
+*Features:* Assembles full multi-epitope constructs incorporating adjuvant sequences (e.g., human $\beta$-defensin), linkers (EAAAK, AAY, GPGPG, KK), CTL/HTL/LBL epitopes, and terminal tags; exports FASTA sequences and visual architecture diagrams.
+
+### 8. Multi-Parametric Construct Screening & Ranking (`filter_and_rank_final_constructs.py`)
+*Features:* Filters and ranks candidate vaccine constructs based on global antigenicity, non-allergenicity, non-toxicity, ProtParam stability metrics (instability index, GRAVY, aliphatic index), and solubility.
 
 ---
 
-## Installation & Dependencies
+## Installation & Requirements
 
-### 1. Python Environment
+### 1. Python Environment (>= 3.8)
+Install required Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-*Required packages:*
-- `biopython>=1.80`
+*Required packages:* `biopython>=1.80`, `Pillow>=9.0.0`
 
-### 2. R Environment
-Requires base R (>= 4.0). No external CRAN packages required.
+### 2. R Environment (>= 4.0)
+Base R is required for `clean_standard_amino_acids.R`. No external CRAN packages required.
 
-### 3. CD-HIT
-Download and install CD-HIT from [CD-HIT GitHub releases](https://github.com/weizhongli/cdhit/releases) and ensure `cd-hit` (or `cd-hit.exe`) is available in your system `PATH`, or specify its location via `--cd-hit`.
+### 3. CD-HIT (>= 4.8.1)
+Ensure `cd-hit` (or `cd-hit.exe`) is available in system `PATH` or passed via `--cd-hit`.
 
 ---
 
-## Usage Instructions
+## Usage Guide
 
-### Step 1: Sequence Retrieval
-Configure your email in the target script (`Entrez.email = "your.email@example.com"`) and execute:
-```bash
-python Bundibugyo_sequence_downloader.py
-python Sudan_sequence_downloader.py
-python Tai_forest_sequence_downloader.py
-python Zaire_sequence_downloader.py
-```
+1. **Retrieve Sequences:**
+   ```bash
+   python Bundibugyo_sequence_downloader.py
+   python Sudan_sequence_downloader.py
+   python Tai_forest_sequence_downloader.py
+   python Zaire_sequence_downloader.py
+   ```
 
-### Step 2: Quality Cleaning
-```bash
-Rscript clean_standard_amino_acids.R --input-root=path/to/downloaded_fasta --output-dir=path/to/cleaned_output
-```
+2. **Clean Sequences:**
+   ```bash
+   Rscript clean_standard_amino_acids.R --input-root=path/to/raw_fasta --output-dir=path/to/cleaned_output
+   ```
 
-### Step 3: CD-HIT Clustering
-```bash
-python run_cdhit_representatives.py --input-dir=path/to/cleaned_output --output-dir=path/to/cdhit_output
-```
+3. **Reduce Redundancy:**
+   ```bash
+   python run_cdhit_representatives.py --input-dir=path/to/cleaned_output --output-dir=path/to/cdhit_output
+   ```
+
+4. **Filter & Select Epitopes:**
+   ```bash
+   python filter_epitopes_for_downstream.py
+   python final_epitope_candidates.py
+   ```
+
+5. **Assemble & Rank Vaccine Constructs:**
+   ```bash
+   python strain_aware_vaccine_construct_selector.py
+   python build_vaccine_construct_sequences_and_maps.py
+   python filter_and_rank_final_constructs.py
+   ```
 
 ---
 
