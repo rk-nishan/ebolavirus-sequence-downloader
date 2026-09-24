@@ -754,28 +754,20 @@ def class_score_function(version_id, epitope_class):
             return score_hla_ii_breadth, "hla_ii_binding_allele_count"
         return score_high_antigenicity, "vaxijen_score"
     if version_id == "V4":
-        return score_high_antigenicity, "vaxijen_score"
-    if version_id == "V5":
         return score_balanced, "balanced_composite_score"
-    if version_id == "V6":
+    if version_id == "V5":
         if epitope_class == "CTL":
             return score_ctl_strength, "ctl_strength_composite_score"
         return score_high_antigenicity, "vaxijen_score"
-    if version_id == "V7":
+    if version_id == "V6":
         if epitope_class == "HTL":
             return score_htl_strength, "htl_strength_composite_score"
         if epitope_class == "CTL":
             return score_ctl_immunogenicity, "mhc_i_immunogenicity_score"
         return score_high_antigenicity, "vaxijen_score"
-    if version_id == "V8":
-        if epitope_class == "CTL":
-            return score_hla_i_breadth, "hla_i_binding_allele_count"
-        if epitope_class == "HTL":
-            return score_hla_ii_breadth, "hla_ii_binding_allele_count"
-        return score_high_antigenicity, "vaxijen_score"
-    if version_id == "V9":
+    if version_id == "V7":
         return score_low_human_similarity, "low_human_similarity_composite_score"
-    if version_id == "V10":
+    if version_id == "V8":
         if epitope_class == "CTL":
             return score_ctl_immunogenicity, "mhc_i_immunogenicity_score"
         return score_high_antigenicity, "vaxijen_score"
@@ -893,47 +885,34 @@ def version_definitions(quota):
         },
         {
             "id": "V4",
-            "name": "Top antigenicity by strain and class",
-            "description": common_text + " Ranking uses VaxiJen antigenicity.",
-            "scope": common_scope,
-        },
-        {
-            "id": "V5",
             "name": "Balanced composite by strain",
             "description": common_text
             + " Ranking uses the original class-specific balanced composite scores.",
             "scope": common_scope,
         },
         {
-            "id": "V6",
+            "id": "V5",
             "name": "CTL-strength construct by strain",
             "description": common_text
             + " CTL uses the CTL-strength composite; B-cell and HTL use VaxiJen.",
             "scope": common_scope,
         },
         {
-            "id": "V7",
+            "id": "V6",
             "name": "HTL-strength construct by strain",
             "description": common_text
             + " HTL uses the HTL-strength composite; CTL uses immunogenicity; B-cell uses VaxiJen.",
             "scope": common_scope,
         },
         {
-            "id": "V8",
-            "name": "Population-coverage proxy by strain",
-            "description": common_text
-            + " CTL uses HLA-I breadth; HTL uses HLA-II breadth; B-cell uses VaxiJen.",
-            "scope": common_scope,
-        },
-        {
-            "id": "V9",
+            "id": "V7",
             "name": "Low human-similarity preference by strain",
             "description": common_text
             + " Ranking uses the low-human-similarity composite score.",
             "scope": common_scope,
         },
         {
-            "id": "V10",
+            "id": "V8",
             "name": "Low-overlap diversity construct by strain",
             "description": common_text
             + " When choices otherwise compete, lower coordinate overlap is preferred before score.",

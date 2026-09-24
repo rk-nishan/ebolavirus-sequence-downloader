@@ -155,9 +155,9 @@ def load_epitope_versions():
         if not rows:
             raise ValueError("%s contains no epitope rows" % path)
 
-        if len(rows) > 27:
+        if len(rows) > 24:
             raise ValueError(
-                "%s has %d rows; maximum allowed is 27"
+                "%s has %d rows; maximum allowed is 24"
                 % (path, len(rows))
             )
         version = rows[0]["construct_version"]
@@ -170,8 +170,8 @@ def load_epitope_versions():
                 "rows": sorted(rows, key=lambda row: int(row["construct_order"])),
             }
         )
-    if len(versions) != 10:
-        raise ValueError("Expected 10 epitope versions, found %d" % len(versions))
+    if len(versions) != 8:
+        raise ValueError("Expected 8 epitope versions, found %d" % len(versions))
     return versions
 
 
@@ -906,9 +906,9 @@ def main():
         "human_blastp_any_80pct_identity_80pct_query_span_hit",
     ]
 
-    write_table(OUTPUT_DIR / "01_60_vaccine_constructs_metadata.csv", construct_rows, construct_columns, ",")
-    write_table(OUTPUT_DIR / "01_60_vaccine_constructs_metadata.tsv", construct_rows, construct_columns, "\t")
-    write_json(OUTPUT_DIR / "01_60_vaccine_constructs_metadata.json", construct_rows)
+    write_table(OUTPUT_DIR / "01_48_vaccine_constructs_metadata.csv", construct_rows, construct_columns, ",")
+    write_table(OUTPUT_DIR / "01_48_vaccine_constructs_metadata.tsv", construct_rows, construct_columns, "\t")
+    write_json(OUTPUT_DIR / "01_48_vaccine_constructs_metadata.json", construct_rows)
 
     fasta_lines = []
     txt_lines = []
@@ -925,12 +925,12 @@ def main():
         txt_lines.append(header)
         txt_lines.append(row["vaccine_sequence"])
         txt_lines.append("")
-    (OUTPUT_DIR / "02_60_vaccine_constructs_sequences.fasta").write_text("\n".join(fasta_lines) + "\n", encoding="utf-8")
-    (OUTPUT_DIR / "02_60_vaccine_constructs_sequences.txt").write_text("\n".join(txt_lines), encoding="utf-8")
+    (OUTPUT_DIR / "02_48_vaccine_constructs_sequences.fasta").write_text("\n".join(fasta_lines) + "\n", encoding="utf-8")
+    (OUTPUT_DIR / "02_48_vaccine_constructs_sequences.txt").write_text("\n".join(txt_lines), encoding="utf-8")
 
-    write_table(OUTPUT_DIR / "03_60_vaccine_construct_segment_map.csv", all_segments, segment_columns, ",")
-    write_table(OUTPUT_DIR / "03_60_vaccine_construct_segment_map.tsv", all_segments, segment_columns, "\t")
-    write_json(OUTPUT_DIR / "03_60_vaccine_construct_segment_map.json", all_segments)
+    write_table(OUTPUT_DIR / "03_48_vaccine_construct_segment_map.csv", all_segments, segment_columns, ",")
+    write_table(OUTPUT_DIR / "03_48_vaccine_construct_segment_map.tsv", all_segments, segment_columns, "\t")
+    write_json(OUTPUT_DIR / "03_48_vaccine_construct_segment_map.json", all_segments)
 
     arch_rows = architecture_summary_rows(construct_rows)
     arch_columns = list(arch_rows[0].keys())

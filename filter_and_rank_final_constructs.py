@@ -28,9 +28,9 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
 
-DEFAULT_SCRIPT_DIR = Path(r"F:\3.Project_Drive\11. Vaccine\000. Version 1.0\12. Vaccine_construct_designs\all_constructs_merged_results")
+DEFAULT_SCRIPT_DIR = Path(r"F:\3.Project_Drive\11. Vaccine\000. Version 2.0\12. Vaccine_construct_designs\all_constructs_merged_results")
 SCRIPT_DIR = DEFAULT_SCRIPT_DIR if DEFAULT_SCRIPT_DIR.exists() else Path("./construct_results")
-DEFAULT_INPUT = SCRIPT_DIR / "all_60_constructs_complete_results.csv"
+DEFAULT_INPUT = SCRIPT_DIR / "all_48_constructs_complete_results.csv"
 DEFAULT_OUTPUT_DIR = SCRIPT_DIR / "filtered_constructs"
 DEFAULT_RANKED_INPUT = DEFAULT_OUTPUT_DIR / "ranked_filtered_constructs.csv"
 
