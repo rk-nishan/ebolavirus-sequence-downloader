@@ -32,7 +32,7 @@ INPUT_FILES = {
 BLAST_SUMMARY_FILE = PARSED_DIR / "12_Human_BLASTp_query_summary.csv"
 
 CLASS_ORDER = ["Bcell", "CTL", "HTL"]
-MAX_TOTAL_EPITOPES = 27
+MAX_TOTAL_EPITOPES = 24
 STRAIN_COLUMN = "strain"
 SINGLE_STRAIN_LABEL = "single_strain"
 
